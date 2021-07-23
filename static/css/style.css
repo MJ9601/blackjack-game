@@ -1,0 +1,87 @@
+/* wholeDivContentContainer */
+.container-1 {
+    width: 80%;
+    margin:auto;
+    text-align: center;
+    display: block;
+    border: 2px solid black;
+    border-radius: 10px;
+}
+.container-1 h1 {
+    font-weight: bolder;
+}
+
+/* playField */
+.game-play-field{
+    background-image: url('../img/blackjack.jpg');
+    background-repeat: no-repeat;
+    height: 500px;
+    background-size: 100% 100%;
+    display: block;
+    overflow: hidden;
+}
+
+/* scoreBoard */
+.scoreBoard {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.scoreBoard div{
+    margin:auto;
+    padding: 10px;
+    color: aliceblue;
+    flex: 1;
+    border-right: 1px solid black;
+}
+
+/* displayGround */
+.displayGround{
+    display: flex;
+    margin: 0;
+    padding: 0%;
+    max-height: inherit;
+}
+.game-display{
+    display: flex;
+    justify-content: center;
+    flex: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex-grow: 50%;
+    border-right: 1px solid black;
+    height: 450px;
+    max-height: inherit;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+
+}
+
+/* buttonField */
+.game-holder-button-side{
+    background:url('..//img/backgournd.jpg') no-repeat;
+    background-size: 100% 100%;
+}
+
+.button-holder {
+    /* border: 1px solid black; */
+    margin: auto  auto;
+    width: 50%;
+    padding: 10px;
+}
+
+
+/* scoreHolder */
+.score-holder-div {
+    border-top: 2px solid black;
+}
+table {
+    margin:5px auto 5px auto;
+
+}
+table th h5 {
+    padding: 5px;
+    font-weight: bold;
+}
+
