@@ -14,7 +14,7 @@
     <!-- wholeDivContentContainer -->
     <div class="container-1">
         <div>
-            <h1>Challenge 5 : Blackjack Game</h1>
+            <h1>Blackjack Game</h1>
             <h3 class="h3-game-notification"><span id="gameNotifications">Let's Play</span></h3>
         </div>
 
@@ -48,10 +48,10 @@
 
         <!-- buttonField -->
         <div class="game-holder-button-side">
-            <div class="button-holder">
+            <div class="button-holder" id="buttonHolderDiv">
                 <button class="btn-lg btn-primary mr-2 font-weight-bold" id="blackjackHitButton">Hit</button>
                 <button class="btn-lg btn-warning mr-2 font-weight-bold" id="blackjackStandButton">Stand</button>
-                <button class="btn-lg btn-danger font-weight-bold" id="blackjackDealButton">Deal</button>   
+                <!-- <button class="btn-lg btn-danger font-weight-bold" id="blackjackDealButton">Deal</button>    -->
 
             </div>
 
@@ -62,13 +62,15 @@
             <table border="1px">
                 <tr>
                     <th><h5>Wins</h5></th>
-                    <th><h5>Losses</h5></th>
                     <th><h5>Draws</h5></th>
+                    <th><h5>Losses</h5></th>
+                    
                 </tr>
                 <tr>
-                    <td><span class="results" id="userScores">0</span></td>
-                    <td><span class="results" id="botScores">0</span></td>
+                    <td><span class="results" id="userWins">0</span></td>
                     <td><span class="results" id="drawGames">0</span></td>
+                    <td><span class="results" id="botWins">0</span></td>
+
                 </tr>
             </table>
              

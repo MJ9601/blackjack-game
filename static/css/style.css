@@ -1,6 +1,6 @@
 /* wholeDivContentContainer */
 .container-1 {
-    width: 80%;
+    width: 50%;
     margin:auto;
     text-align: center;
     display: block;
@@ -50,7 +50,7 @@
     flex-wrap: wrap;
     flex-grow: 50%;
     border-right: 1px solid black;
-    height: 450px;
+    height: 500px;
     max-height: inherit;
     overflow: hidden;
     margin: 0;
