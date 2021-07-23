@@ -24,7 +24,7 @@ const blackjackDirectory = {
     'sounds':{
         'throw':'static/sound/swish.m4a',
         'win':'static/sound/cash.mp3',
-        'loss':'static/sound/aww.mp3'
+        'lost':'static/sound/aww.mp3'
     },
     'scoreBoard':{'id':'#gameNotifications'},
 };
@@ -37,6 +37,8 @@ let cardCollection = Object.keys(blackjackDirectory['ScoreCardCollection']);
 const user = blackjackDirectory['user'];
 const bot = blackjackDirectory['bot'];
 const hiterSound = new Audio(blackjackDirectory['sounds']['throw']);
+const winSound = new Audio(blackjackDirectory['sounds']['win']);
+const lostSound = new Audio(blackjackDirectory['sounds']['lost']);
 
 document.querySelector('#blackjackHitButton')
 .addEventListener('click',blackjackHit);
@@ -105,7 +107,10 @@ function blakcjackStand() {
     let gameResults = winnerDeterminer(userScoreCount, botScoreCount);
 
     gameNotification(gameResults[3]['msg'], blackjackDirectory);
+    if (gameResults[3]['msg'] === 'YOU LOST!!') lostSound.play();
+    else if (gameResults[3]['msg'] === 'YOU WON!!') winSound.play();
     tableDataUpdater(gameResults);
+
         const newButton = {
             'oldButtons':{'Hit':{'name':'Hit', 'id':'blackjackHitButton', 'class':'btn-lg btn-primary font-weight-bold mr-2'},
             "Stand":{'name':'Stand', 'id':"blackjackStandButton", 'class':'btn-lg btn-warning font-weight-bold mr-2'}},
