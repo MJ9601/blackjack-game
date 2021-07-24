@@ -18,7 +18,7 @@ const blackjackDirectory = {
                 'J.png':10,
                 'Q.png':10,
                 'K.png':10,
-                'A.png':11
+                'A.png': [1, 11]
                 
             },
     'sounds':{
@@ -41,9 +41,9 @@ const winSound = new Audio(blackjackDirectory['sounds']['win']);
 const lostSound = new Audio(blackjackDirectory['sounds']['lost']);
 
 document.querySelector('#blackjackHitButton')
-.addEventListener('click',blackjackHit);
+            .addEventListener('click',blackjackHit);
 document.querySelector('#blackjackStandButton')
-.addEventListener('click', blakcjackStand);
+            .addEventListener('click', blakcjackStand);
 
 
 
@@ -61,9 +61,10 @@ function blackjackHit() {
         if (userScoreCount > 21) {
             userScoreCount = -1;
             console.log(userScoreCount);
+            botPlayCondition = false;
         }
     }else{
-        gameNotification(`IT IS NOT YOUR TURN!!`, blackjackDirectory);
+        gameNotification(`YOU CAN'T PICK ANOTHER CARD!!`, blackjackDirectory);
     }
      
 }
@@ -71,12 +72,11 @@ function blackjackHit() {
 // bot playing excutional funtion
 function blakcjackStand() {
 
-    if (botPlayCondition) {
         // console.log(userScoreCount);
         let loopCounter = 0;
         while ((loopCounter < cardCollection.length)) {
 
-            
+
 
             botScoreCount = gameConditionChecker(botScoreCount,cardCollection, blackjackDirectory, bot);
             if ((botScoreCount > 21)) {
@@ -92,7 +92,7 @@ function blakcjackStand() {
                     // console.log(botScoreCount);
                     break;
                 
-            }else if ((botScoreCount >=  userScoreCount)) {
+            }else if ((botScoreCount >  userScoreCount)) {
                 break;
             } 
             loopCounter++;
@@ -100,9 +100,7 @@ function blakcjackStand() {
 
 
         botPlayCondition =false;
-    }else{
-        gameNotification(`DEALER HAS ALREADY PLAYED!!`, blackjackDirectory);
-    }
+
 
     let gameResults = winnerDeterminer(userScoreCount, botScoreCount);
 
@@ -124,6 +122,7 @@ function blakcjackStand() {
      
     
 }
+
 
 
 
@@ -156,9 +155,9 @@ function blackjackDealer() {
 
     // call on buttons
     document.querySelector('#blackjackHitButton')
-    .addEventListener('click',blackjackHit);
+            .addEventListener('click',blackjackHit);
     document.querySelector('#blackjackStandButton')
-    .addEventListener('click', blakcjackStand);
+            .addEventListener('click', blakcjackStand);
 
     
 }
@@ -170,7 +169,18 @@ function removeImgTage(id) {
     while (imgTageDiv.firstChild) {
         imgTageDiv.removeChild(imgTageDiv.firstChild);
         
-    }   
+    }  
+
+
+    // // second way
+    // let imgTages = document.querySelector(id).querySelectorAll('img');
+    // console.log(typeof imgTages, imgTages);
+    // for(let key in imgTages){
+    //     console.log(imgTages[key]);
+    //     imgTages[key].remove();
+    // }
+        
+
 }
 
 
@@ -227,12 +237,28 @@ function randomPickUpCard(cardCollection) {
 // Score Counter fucntion
 function scoreCounters(blackjackDirectory, cardName, scoreCounter) {
     if (scoreCounter < 21) {
-        let cardScore = blackjackDirectory['ScoreCardCollection'][cardName];
-        scoreCounter += cardScore;
+        if (cardName === "A.png") {
+            if (blackjackDirectory['ScoreCardCollection'][cardName][1] + scoreCounter <= 21) {
+                console.log((blackjackDirectory['ScoreCardCollection'][cardName][1]));
+                scoreCounter += blackjackDirectory['ScoreCardCollection'][cardName][1];
+                return scoreCounter
+            }else{
+                scoreCounter += blackjackDirectory['ScoreCardCollection'][cardName][0];
+                return scoreCounter
+            }
+            
+        }else{
+
+       
+        scoreCounter +=  blackjackDirectory['ScoreCardCollection'][cardName];
+        // console.log(scoreCounter);
         return scoreCounter
+        }
 
     } else{
         return -1
+        // console.log(scoreCounter);
+        // return scoreCounter
     }
 
 
@@ -245,18 +271,18 @@ function scoreCounters(blackjackDirectory, cardName, scoreCounter) {
 function gameNotification(resultText, blackjackDirectory) {
     document.querySelector(blackjackDirectory['scoreBoard']['id']).innerText = resultText;
     document.querySelector(blackjackDirectory['scoreBoard']['id'])
-    .style = 'color: red; font-weigh:bloder';
+                            .style = 'color: red; font-weigh:bloder';
 
     if (resultText === 'YOU WON!!') {
         document.querySelector(blackjackDirectory['scoreBoard']['id'])
-        .style = 'color: green; font-weigh:bloder';
+                    .style = 'color: green; font-weigh:bloder';
     }else if (resultText === 'DRAW!!') {
         document.querySelector(blackjackDirectory['scoreBoard']['id'])
-        .style = 'color:  #f8c300 ; font-weigh:bloder';
+                    .style = 'color:  #f8c300 ; font-weigh:bloder';
         
     }else if (resultText === "Let's Play Again!") {
         document.querySelector(blackjackDirectory['scoreBoard']['id'])
-        .style = 'color:  #05DCFA ; font-weigh:bloder';
+                    .style = 'color:  #05DCFA ; font-weigh:bloder';
         
     }
     
@@ -286,7 +312,11 @@ function displayCard(cardName, player, hiterSound) {
     cardImg.width = `${imgAdapter(360, 500, parseInt(cardImg.height))}`
     
     cardImg.setAttribute('style',
-    'margin:5px; text-align:center; border-radius:10px; background-color:white');
+                        `margin:5px;
+                         text-align:center;
+                          border-radius:10px;
+                           background-color:white`);
+    cardImg.setAttribute('class', 'imgTagePhoneDisplay');
     document.querySelector(player['div']).appendChild(cardImg);
     hiterSound.play();
 

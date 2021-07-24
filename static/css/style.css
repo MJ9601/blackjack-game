@@ -85,3 +85,18 @@ table th h5 {
     font-weight: bold;
 }
 
+/* Phone display */
+@media screen and (max-width: 680px){
+    .container-1{
+        width: 100%;
+    }
+    .imgTagePhoneDisplay {
+        height: 100px !important;
+        width: inherit !important;
+    }
+    .game-display,
+    .game-play-field{
+        height: 300px ;
+    }
+}
+
