@@ -29,6 +29,29 @@ const blackjackDirectory = {
     'scoreBoard':{'id':'#gameNotifications'},
 };
 
+class Button{
+    constructor(nameButton, idButton, classButton){
+        this.nameButton = nameButton;
+        this.idButton = idButton;
+        this.classButton = classButton;
+    }
+    removeButtons(){
+        document.querySelector(`#${this.idButton}`).remove();
+    }
+    addButtons(){
+        const createdButton = document.createElement('button');
+        createdButton.setAttribute('class',this.classButton);
+        createdButton.setAttribute('id', this.idButton);
+        createdButton.textContent = this.nameButton;
+        document.querySelector('#buttonHolderDiv').appendChild(createdButton);
+    }
+}
+
+
+// instantaite new Button
+const hitButton = new Button('Hit', 'blackjackHitButton', 'btn-lg btn-primary font-weight-bold mr-2');
+const standButton = new Button('Stand', 'blackjackStandButton', 'btn-lg btn-warning font-weight-bold');
+const dealButton = new Button('Deal', 'blackjackDealButton', 'btn-lg btn-danger font-weight-bold')
 
 
 let cardCollection = Object.keys(blackjackDirectory['ScoreCardCollection']);
@@ -51,11 +74,13 @@ document.querySelector('#blackjackStandButton')
 let userScoreCount = 0;
 let botScoreCount = 0;
 let botPlayCondition = true;
+let userPlayedFirst = false;
 
 
 
 // user playing excutional funtion
 function blackjackHit() { 
+    userPlayedFirst = true;
     if (botPlayCondition) {
         userScoreCount = gameConditionChecker(userScoreCount, cardCollection, blackjackDirectory, user);
         if (userScoreCount > 21) {
@@ -69,57 +94,63 @@ function blackjackHit() {
      
 }
 
+const sleep = (timeout) => 
+     new Promise(resolve => setTimeout(resolve, timeout));
+
 // bot playing excutional funtion
-function blakcjackStand() {
+async function blakcjackStand() {
+        if (userPlayedFirst) {
+            
 
-        // console.log(userScoreCount);
-        let loopCounter = 0;
-        while ((loopCounter < cardCollection.length)) {
+            // console.log(userScoreCount);
+            let loopCounter = 0;
+            while ((loopCounter < cardCollection.length)) {
 
+                botScoreCount = gameConditionChecker(botScoreCount,cardCollection, blackjackDirectory, bot);
+                await sleep(700);
 
-
-            botScoreCount = gameConditionChecker(botScoreCount,cardCollection, blackjackDirectory, bot);
-            if ((botScoreCount > 21)) {
-                botScoreCount = -1;
-                break;
-                
-            }else if (
-            ((botScoreCount >= 17) && 
-            (!cardCollection.includes('2.png') ||
-             (!cardCollection.includes('3.png')) &&
-             (!cardCollection.includes('4.png'))))
-                ) {
-                    // console.log(botScoreCount);
+                if ((botScoreCount > 21)) {
+                    botScoreCount = -1;
                     break;
-                
-            }else if ((botScoreCount >  userScoreCount)) {
-                break;
-            } 
-            loopCounter++;
-        }
+                    
+                }else if (
+                ((botScoreCount >= 17) && 
+                (!cardCollection.includes('2.png') ||
+                (!cardCollection.includes('A.png')) ||
+                (!cardCollection.includes('3.png')) &&
+                (!cardCollection.includes('4.png'))))
+                    ) {
+                        // console.log(botScoreCount);
+                        break;
+                    
+                }else if ((botScoreCount >=  userScoreCount) ||
+                        (botScoreCount >= 19)) {
+                    break;
+                } 
+                loopCounter++;
+            }
 
 
-        botPlayCondition =false;
+            botPlayCondition =false;
 
 
-    let gameResults = winnerDeterminer(userScoreCount, botScoreCount);
+        let gameResults = winnerDeterminer(userScoreCount, botScoreCount);
 
-    gameNotification(gameResults[3]['msg'], blackjackDirectory);
-    if (gameResults[3]['msg'] === 'YOU LOST!!') lostSound.play();
-    else if (gameResults[3]['msg'] === 'YOU WON!!') winSound.play();
-    tableDataUpdater(gameResults);
+        gameNotification(gameResults[3]['msg'], blackjackDirectory);
+        if (gameResults[3]['msg'] === 'YOU LOST!!') lostSound.play();
+        else if (gameResults[3]['msg'] === 'YOU WON!!') winSound.play();
+        tableDataUpdater(gameResults);
 
-        const newButton = {
-            'oldButtons':{'Hit':{'name':'Hit', 'id':'blackjackHitButton', 'class':'btn-lg btn-primary font-weight-bold mr-2'},
-            "Stand":{'name':'Stand', 'id':"blackjackStandButton", 'class':'btn-lg btn-warning font-weight-bold mr-2'}},
-            'newButtons':{'Deal':{'name':'Deal', 'id':"blackjackDealButton", 'class':'btn-lg btn-danger font-weight-bold'}},
-        }
-        buttomReaseter(newButton);
-        
-    
-    document.querySelector('#blackjackDealButton').addEventListener('click',blackjackDealer);
 
-     
+            hitButton.removeButtons();
+            standButton.removeButtons();
+            dealButton.addButtons();
+
+        document.querySelector('#blackjackDealButton').addEventListener('click',blackjackDealer);
+
+    }else{
+        gameNotification(`YOU HAVE TO PICK ATLEAST A CARD!!`, blackjackDirectory);
+    }
     
 }
 
@@ -139,17 +170,16 @@ function blackjackDealer() {
 
 
     // rebuild buttons
-    const newButton = {
-        'oldButtons':{'Deal':{'name':'Deal', 'id':"blackjackDealButton", 'class':'btn-lg btn-danger font-weight-bold'}},
-        'newButtons':{'Hit':{'name':'Hit', 'id':'blackjackHitButton', 'class':'btn-lg btn-primary font-weight-bold mr-2'},
-        "Stand":{'name':'Stand', 'id':"blackjackStandButton", 'class':'btn-lg btn-warning font-weight-bold mr-2'}},
-    }
-    buttomReaseter(newButton);
+
+    dealButton.removeButtons();
+    hitButton.addButtons();
+    standButton.addButtons();
 
     // reset base varibles
     userScoreCount = 0;
     botScoreCount = 0;
     botPlayCondition = true;
+    userPlayedFirst = false;
     cardCollection = Object.keys(blackjackDirectory['ScoreCardCollection']);
     console.log(typeof cardCollection, cardCollection);
 
@@ -294,10 +324,12 @@ function displayScores(score, player) {
     document.querySelector(player['scoreSpam']).innerText = score;
     // console.log(document.querySelector(player['scoreSpam']));
     if (typeof score == 'string') {
-        document.querySelector(player['scoreSpam']).style = 'color: red; font-weigh:bloder';
+        document.querySelector(player['scoreSpam'])
+                                .style = 'color: red; font-weigh:bloder';
         
     }else if (typeof score == 'number') {
-        document.querySelector(player['scoreSpam']).style = 'color: white; font-weigh:bloder';
+        document.querySelector(player['scoreSpam'])
+                                .style = 'color: white; font-weigh:bloder';
     }
 }
 
@@ -342,32 +374,5 @@ function tableDataUpdater(gameResults) {
     parseInt(document.querySelector('#userWins').innerText) + gameResults[2];
 
 
-    
-}
-
-
-
-// const newButton = {
-//     'oldButtons':{'Hit':{'id':'blackjackHitButton', 'class':'btn btn-primary'},
-//     "Stand":{'id':"blackjackStandButton", 'class':'btn btn-warning'}},
-//     'newButtons':{'Deal':{'id':"blackjackDealButton", 'class':'btn btn-danger'}},
-// }
-
-
-// buttom reseter
-function buttomReaseter(newButton) {
-    // remove the old buttons
-    for(key in newButton['oldButtons']){
-        document.querySelector(`#${newButton['oldButtons'][key]['id']}`).remove();
-
-    }
-    for(key in newButton['newButtons']){
-        // console.log(newButton['newButtons'][key]);
-        let createdButton = document.createElement('button');
-        createdButton.setAttribute('class',newButton['newButtons'][key]['class']);
-        createdButton.setAttribute('id', newButton['newButtons'][key]['id']);
-        createdButton.textContent = newButton['newButtons'][key]['name'];
-        document.querySelector('#buttonHolderDiv').appendChild(createdButton);
-    }
     
 }
